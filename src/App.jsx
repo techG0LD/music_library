@@ -1,8 +1,10 @@
-import Gallery from './components/Gallery';
 import './App.css';
+import {BrowserRouter as Router, Routes,Route} from 'react-router-dom'
 import {useState,useEffect} from 'react'
 import SearchBar from './components/SearchBar';
-
+import Gallery from './components/Gallery';
+import AlbumView from './components/AlbumView';
+import ArtistView from './components/ArtistView'
 
 function App() {
   const [search,setSearch] = useState("")
@@ -18,7 +20,7 @@ function App() {
       const response = await fetch(API_URL + search)
       const resData = await response.json()
       if(resData.results.length){
-        return setData(resData.results)
+        return setData(resData.results) 
       } else {
         return setMessage("Not found")
       }
@@ -36,9 +38,23 @@ function App() {
 
   return (
     <div className="App">
-      <SearchBar handleSearch={handleSearch}/>
       {message}
-      <Gallery data={data}/>
+      <Router>
+        <Routes>
+
+          <Route path='/' element= {
+             //fragment does not work so liv carrots blank works similarly
+             <>                  
+              <SearchBar handleSearch={handleSearch}/>
+              <Gallery data={data}/>
+            </>
+          }/>
+
+          <Route path='/album/:id' element={<AlbumView/>}/>
+          <Route path="/artist/:id" element={ <ArtistView/>}/>
+        </Routes>
+      </Router>
+      
     </div>
   )
 }
